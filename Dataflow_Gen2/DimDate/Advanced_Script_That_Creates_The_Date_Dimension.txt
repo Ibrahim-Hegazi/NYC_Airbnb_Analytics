@@ -1,0 +1,71 @@
+let
+  Source = let
+    StartDate = #date(1920, 1, 1),
+    EndDate = #date(2025, 12, 31),
+    NumberOfDays = Duration.Days(EndDate - StartDate) + 1,
+    DateList = List.Dates(StartDate, NumberOfDays, #duration(1, 0, 0, 0)),
+    TableFromList = Table.FromList(DateList, Splitter.SplitByNothing(), {"Date"}, null, ExtraValues.Error),
+    ChangedType = Table.TransformColumnTypes(TableFromList, {{"Date", type date}}),
+    DateKey = Table.AddColumn(ChangedType, "DateKey", each Int64.From(Text.From(Date.Year([Date])) & Text.PadStart(Text.From(Date.Month([Date])), 2, "0") & Text.PadStart(Text.From(Date.Day([Date])), 2, "0")), Int64.Type),
+    Year = Table.AddColumn(DateKey, "Year", each Date.Year([Date]), Int64.Type),
+    MonthNumber = Table.AddColumn(Year, "MonthNumber", each Date.Month([Date]), Int64.Type),
+    MonthName = Table.AddColumn(MonthNumber, "MonthName", each Date.MonthName([Date]), type text),
+    MonthShort = Table.AddColumn(MonthName, "MonthShort", each Text.Start(Date.MonthName([Date]), 3), type text),
+    DayOfMonth = Table.AddColumn(MonthShort, "DayOfMonth", each Date.Day([Date]), Int64.Type),
+    DayOfWeek = Table.AddColumn(DayOfMonth, "DayOfWeek", each Date.DayOfWeek([Date], Day.Monday) + 1, Int64.Type),
+    DayName = Table.AddColumn(DayOfWeek, "DayName", each Date.DayOfWeekName([Date]), type text),
+    DayShort = Table.AddColumn(DayName, "DayShort", each Text.Start(Date.DayOfWeekName([Date]), 3), type text),
+    FiscalYear = Table.AddColumn(DayShort, "FiscalYear", each if Date.Month([Date]) >= 7 then Date.Year([Date]) + 1 else Date.Year([Date]), Int64.Type),
+    Quarter = Table.AddColumn(FiscalYear, "Quarter", each "Q" & Text.From(Date.QuarterOfYear([Date])), type text),
+    QuarterNumber = Table.AddColumn(Quarter, "QuarterNumber", each Date.QuarterOfYear([Date]), Int64.Type),
+    WeekOfYear = Table.AddColumn(QuarterNumber, "WeekOfYear", each Date.WeekOfYear([Date], Day.Monday), Int64.Type),
+    IsWeekend = Table.AddColumn(WeekOfYear, "IsWeekend", each if Date.DayOfWeek([Date], Day.Monday) >= 5 then 1 else 0, Int64.Type),
+    YearMonth = Table.AddColumn(IsWeekend, "YearMonth", each Text.From(Date.Year([Date])) & "-" & Text.PadStart(Text.From(Date.Month([Date])), 2, "0"), type text)
+  in
+    YearMonth,
+    
+  AddUnknownRow = Table.Combine({
+    Source,
+    Table.FromRecords({
+      [
+        Date = null,
+        DateKey = 99999999,
+        Year = 9999,
+        MonthNumber = 0,
+        MonthName = "Unknown",
+        MonthShort = "Unk",
+        DayOfMonth = 0,
+        DayOfWeek = 0,
+        DayName = "Unknown",
+        DayShort = "Unk",
+        FiscalYear = 9999,
+        Quarter = "Q0",
+        QuarterNumber = 0,
+        WeekOfYear = 0,
+        IsWeekend = 0,
+        YearMonth = "9999-00"
+      ]
+    })
+  }),
+  
+  // 🔥 FIX: Set types for ALL columns here
+  SetAllTypes = Table.TransformColumnTypes(AddUnknownRow, {
+    {"Date", type date},
+    {"DateKey", Int64.Type},
+    {"Year", Int64.Type},
+    {"MonthNumber", Int64.Type},
+    {"MonthName", type text},
+    {"MonthShort", type text},
+    {"DayOfMonth", Int64.Type},
+    {"DayOfWeek", Int64.Type},
+    {"DayName", type text},
+    {"DayShort", type text},
+    {"FiscalYear", Int64.Type},
+    {"Quarter", type text},
+    {"QuarterNumber", Int64.Type},
+    {"WeekOfYear", Int64.Type},
+    {"IsWeekend", Int64.Type},
+    {"YearMonth", type text}
+  })
+in
+  SetAllTypes
