@@ -422,24 +422,18 @@ NYC_Airbnb_2019_Analytics/
 ├── data/                              # Data assets
 │   ├── raw/                           # Source CSV
 │   │   └── AB_NYC_2019.csv
-│   └── processed/                     # Exported profiling reports
 │
+├──Dataflow_Gen2
+│ 
 ├── docs/                              # Documentation
-│   ├── architecture_diagram.png
-│   ├── data_flow_diagram.png
-│   ├── error_catalog.md
-│   ├── data_dictionary.md
-│   ├── dq_framework.md
-│   ├── dimensional_model.md
-│   └── stakeholder_escalation.md
 │
-├── dashboards/                        # Power BI files
+├── powerbi_screenshots/                        # Power BI Screenshots
 │   └── NYC_Airbnb_2019_Analytics.pbix
 │
 └── sql/                               # SQL scripts for Gold layer
-    ├── create_dim_tables.sql
-    ├── create_fact_table.sql
-    └── insert_gold_data.sql
+    ├── Creating Calculated Columns Because The Semantic Layer Not Allowing Me To Do So.sql
+    └── Knowing All Tables and Columns In the Gold Layer.sql
+
 ```
 
 ---
