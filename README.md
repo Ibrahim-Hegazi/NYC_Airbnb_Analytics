@@ -1,3 +1,4 @@
+<img width="1040" height="1739" alt="3_Project_Architecture" src="https://github.com/user-attachments/assets/64b679bc-67d3-49f0-be5c-b71a4104405a" />
 # 🏙️ NYC Airbnb 2019 Analytics — Enterprise Data Warehouse & BI Solution
 
 A fully automated, multi-tiered Business Intelligence pipeline built on Microsoft Fabric that ingests raw Airbnb listing data, applies a 42-check data quality framework, cleanses 12 actual errors, models a dimensional Star Schema, and delivers an interactive Power BI dashboard answering 10 SMART business questions about the NYC short-term rental market.
@@ -140,92 +141,6 @@ The enterprise pipeline ingests an exhaustive **48,895-record payload** originat
 
 ## 📈 System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     PHASE 1-2: ENVIRONMENT & RAW DATA                     │
-│                     (Microsoft Fabric Workspace)                          │
-│                                                                          │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐        │
-│  │    Lakehouse      │  │    Warehouse      │  │   AB_NYC_2019    │        │
-│  │  Bronze Schema    │  │  Gold Schema      │  │     .csv         │        │
-│  │  Silver Schema    │  │                   │  │   48,895 rows    │        │
-│  └────────┬─────────┘  └────────┬──────────┘  └────────┬─────────┘        │
-└───────────┼─────────────────────┼───────────────────────┼──────────────────┘
-            │                     │                       │
-            ▼                     │                       │
-┌─────────────────────────────────┼───────────────────────┼──────────────────┐
-│              PHASE 3-4: VALIDATION & PROFILING (Notebooks 1-3)             │
-│                                                                          │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐        │
-│  │  Notebook 1       │  │  Notebook 2       │  │  Notebook 3       │        │
-│  │  Schema Validator │  │  Cleaner/         │  │  Pre-EDA          │        │
-│  │  • Type checks    │  │  Normalizer       │  │  Profiling        │        │
-│  │  • Column mapping │  │  • Initial fixes  │  │  • Classification │        │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘        │
-└─────────────────────────────────────────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                   PHASE 5: BRONZE INGESTION (Notebook 4)                   │
-│                                                                          │
-│  ┌────────────────────────────────────────────┐                          │
-│  │          Bronze.AB_NYC_2019                  │                          │
-│  │  • Raw Delta table (immutable)               │                          │
-│  │  • 48,895 rows | 16 columns                  │                          │
-│  └────────────────────┬───────────────────────┘                          │
-└───────────────────────┼──────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                 PHASE 6: EDA & DQ FRAMEWORK (Notebook 5)                   │
-│                                                                          │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐        │
-│  │  9 DQ Categories │  │  25 Issues        │  │  Visualizations   │        │
-│  │  • 42 Checks     │  │  • 12 Actual      │  │  • Histograms     │        │
-│  │  • Format        │  │  • 8 Anomalies    │  │  • Pairplots      │        │
-│  │  • Validity      │  │  • 5 Edge Cases   │  │  • Heatmaps       │        │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘        │
-└─────────────────────────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│              PHASE 7-8: CLEANING & POST-PROFILING (Notebooks 6-7)         │
-│                                                                          │
-│  ┌──────────────────┐  ┌──────────────────┐                              │
-│  │  Notebook 6       │  │  Notebook 7       │                              │
-│  │  Data Cleaning    │  │  Post-Cleaning    │                              │
-│  │  • 6 auto-fixes   │  │  Profiling        │                              │
-│  └────────┬─────────┘  └──────────────────┘                              │
-│  ┌────────▼───────────────────────────────┐                              │
-│  │        Silver.AB_NYC_2019               │                              │
-│  │  • Cleansed Delta table                  │                              │
-│  └────────────────────┬───────────────────┘                              │
-└───────────────────────┼──────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│              PHASE 9: DIMENSIONAL MODELING (Data Flow Gen2)                │
-│                                                                          │
-│  ┌──────────────────────────────────────────────────────────────────┐   │
-│  │                      STAR SCHEMA (Gold Layer)                     │   │
-│  │  DimDate ←── FactListing ──→ DimHost                             │   │
-│  │  DimListing ←── FactListing ──→ DimNeighborhood                  │   │
-│  │  DimRoomType ←── FactListing                                     │   │
-│  └──────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────┘
-                        │
-                        ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                 PHASE 10-11: SEMANTIC MODEL & DASHBOARD                    │
-│                     (Power BI)                                            │
-│                                                                          │
-│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐        │
-│  │  Semantic Model   │  │  37 DAX Measures │  │  7 Dashboard      │        │
-│  │  • 6 Tables       │  │  • KPIs          │  │  Pages            │        │
-│  │  • Relationships  │  │  • Aggregations  │  │  • Market Overview│        │
-│  └──────────────────┘  └──────────────────┘  └──────────────────┘        │
-└─────────────────────────────────────────────────────────────────────────┘
-```
 
 ---
 
