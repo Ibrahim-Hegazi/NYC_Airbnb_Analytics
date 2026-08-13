@@ -428,7 +428,6 @@ NYC_Airbnb_2019_Analytics/
 ├── docs/                              # Documentation
 │
 ├── powerbi_screenshots/                        # Power BI Screenshots
-│   └── NYC_Airbnb_2019_Analytics.pbix
 │
 └── sql/                               # SQL scripts for Gold layer
     ├── Creating Calculated Columns Because The Semantic Layer Not Allowing Me To Do So.sql
