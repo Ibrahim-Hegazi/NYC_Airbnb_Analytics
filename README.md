@@ -1,4 +1,3 @@
-<img width="1040" height="1739" alt="3_Project_Architecture" src="https://github.com/user-attachments/assets/64b679bc-67d3-49f0-be5c-b71a4104405a" />
 # 🏙️ NYC Airbnb 2019 Analytics — Enterprise Data Warehouse & BI Solution
 
 A fully automated, multi-tiered Business Intelligence pipeline built on Microsoft Fabric that ingests raw Airbnb listing data, applies a 42-check data quality framework, cleanses 12 actual errors, models a dimensional Star Schema, and delivers an interactive Power BI dashboard answering 10 SMART business questions about the NYC short-term rental market.
@@ -140,6 +139,8 @@ The enterprise pipeline ingests an exhaustive **48,895-record payload** originat
 ---
 
 ## 📈 System Architecture
+
+<img width="1040" height="1739" alt="3_Project_Architecture" src="https://github.com/user-attachments/assets/64b679bc-67d3-49f0-be5c-b71a4104405a" />
 
 
 ---
