@@ -356,6 +356,8 @@ The enterprise pipeline ingests an exhaustive **48,895-record payload** originat
 
 ## 🧬 Data Flow Diagram
 
+<img width="1008" height="296" alt="2_Project_Phases" src="https://github.com/user-attachments/assets/ae36067b-ec5f-48e6-9b1a-e9191534afeb" />
+
 ```
 Raw CSV (48,895 rows, 16 columns)
         │
@@ -500,29 +502,11 @@ NYC_Airbnb_2019_Analytics/
 ## 📐 Dimensional Data Model
 
 ### Star Schema
+<img width="2752" height="1492" alt="6_Physical_Schema" src="https://github.com/user-attachments/assets/8b8db849-13c9-4a00-b5e1-a75fca8ed6fa" />
 
-```
-                    ┌─────────────┐
-                    │  DimDate     │
-                    │  DateKey PK  │
-                    └──────┬───────┘
-                           │
-┌─────────────┐     ┌──────▼───────┐     ┌─────────────┐
-│  DimHost     │─────│ FactListing  │─────│DimNeighborhood│
-│  HostID PK   │     │ ListingID FK │     │NeighbID PK  │
-└─────────────┘     │ HostID FK    │     └─────────────┘
-                    │ NeighbID FK  │
-┌─────────────┐     │ RoomTypeID FK│     ┌─────────────┐
-│ DimListing   │─────│ DateKey FK   │─────│DimRoomType  │
-│ListingID PK │     │ Price        │     │RoomTypeID PK│
-└─────────────┘     │ MinimumNights│     └─────────────┘
-                    │ NumReviews   │
-                    │ ReviewsPerMo │
-                    │ Availability │
-                    │ Latitude     │
-                    │ Longitude    │
-                    └──────────────┘
-```
+
+<img width="744" height="569" alt="7_Semantic_Model" src="https://github.com/user-attachments/assets/7dee46b6-f93a-483a-a0ec-4c02e9bee7dd" />
+
 
 ### Table Sizes
 
